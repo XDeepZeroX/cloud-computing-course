@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+
+  react-sample-app:
+    container_name: react-sample-app
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - 6001:80
+    networks:
+      - python-api-tutorial
+
+networks:
+  python-api-tutorial:
+    external: 
+      name: python-api-tutorial

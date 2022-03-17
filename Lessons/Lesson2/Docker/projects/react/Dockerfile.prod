@@ -1,0 +1,22 @@
+# Официальный номер Node
+FROM node as build
+# Установка папки по умолчанию (в контейнере)
+WORKDIR /app
+
+# Добавление пути `/app/node_modules/.bin` в переменную среды $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+
+# Установка зависимостей
+COPY sample/ ./
+RUN npm install
+
+# Сборка проекта
+RUN npm run build
+
+# Production окружение 
+FROM nginx:stable-alpine
+COPY --from=build /app/build /usr/share/nginx/html
+
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

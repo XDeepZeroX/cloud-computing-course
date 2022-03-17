@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  basket:
+    container_name: python-basket-api
+    # Не может отличаться от container_name,
+
+    # следовательно значение по умолчанию равно container_name
+    hostname: python-basket-api
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./Basket.dockerfile
+    environment:
+      - ENVIRONMENT=Production
+    networks:
+      - python-api-tutorial
+  messages:
+    container_name: python-messages-api
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./Messages.dockerfile
+    environment:
+      - ENVIRONMENT=Production
+    networks:
+      - python-api-tutorial
+  nginx:
+    container_name: python-nginx-api
+    hostname: python-nginx-api
+    image: nginx
+    restart: unless-stopped
+    ports:
+      - 6000:80
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - python-api-tutorial
+
+networks:
+  python-api-tutorial:
+    external: 
+      name: python-api-tutorial
